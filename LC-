@@ -6,7 +6,6 @@
 // When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item. 
 
 
-class LRUCache{
 public:
 
 struct DLinkItem {
@@ -23,36 +22,69 @@ struct DLinkItem {
     int get(int key) {
         DLinkItem *item = cacheMap[key];
         if (item != nullptr) {
+            // item touched, need to append to tail to update LRU list
+            if (item != tail) {
+                if (item != head) { //if item is not head, item->prev can't be nullptr
+                    if (item->prev)
+                        item->prev->next = item->next;
+                } else if (item->next) { // item is head and not a single item in list
+                    head = item->next; 
+                }
+                tail->next = item;
+                item->prev = tail;
+                item->next = nullptr;
+                tail = item;
+            }
+          //  cout << "f..." << key << "  " << item->val << endl;
             return item->val;
         }
+//        cout <<"no f..." << endl;
         return -1;
     }
     
     void set(int key, int value) {
         DLinkItem *item = cacheMap[key];
+
         if (item == nullptr) {
             if (numItems == maxCapacity) {
-                DLinkItem *item = head;
+                DLinkItem *h = head;
+                cacheMap.erase(head->key);
+                cout << "erase "  << head->key << endl;
                 head = head->next;
-                head->prev = nullptr;
-                delete item;
+                if (head)
+                    head->prev = nullptr;
+                delete h;
                 --numItems;
             }
             item = new DLinkItem(key,value);
             cacheMap[key] = item;
+            ++numItems;
         } 
-        if (item->prev) {
-            item->prev->next = item->next;
+        if (item->val != value) {
+            item->val = value;
         }
-        if (item->next) {
-            item->next->prev = item->prev;
-        }
-        if (tail == nullptr)
+        
+        if (head == nullptr) {
+            head = item;
             tail = item;
-        tail->next = item;
-        item->prev = tail;
-        tail = item;
-        ++numItems;
+        } else if (item != tail) {
+            if (item != head) { 
+                // two situations here
+                // 1. item is an old item, so if it is not head, its prev is not null 
+                if (item->prev) {
+                    item->prev->next = item->next;
+                } //else { // it is a new item
+                  //item->prev = tail;
+                //}
+            } else if (item->next) { // item is head and not a single item in list
+                head = item->next; 
+            }
+            tail->next = item;
+            item->prev = tail;
+            item->next = nullptr;
+            tail = item;
+        }
+  //      cout << "num " << numItems << endl;
     }
     
 private:
