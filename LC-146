@@ -8,6 +8,44 @@
 
 
 class LRUCache{
+
+public:
+    LRUCache(int capacity) : maxCapacity(capacity) {}
+    
+    int get(int key) {
+        auto iter = cacheMap.find(key);
+        if (iter == cacheMap.end()) //key doesn't exist
+            return -1;
+        cacheList.splice(cacheList.begin(), cacheList, iter->second); //move the node corresponding to key to front
+        return iter->second->second;                               //return value of the node
+    }
+    
+    void set(int key, int value) {
+        auto iter = cacheMap.find(key);
+        if (iter != cacheMap.end()) //key exists
+        {
+            cacheList.splice(cacheList.begin(), cacheList, iter->second); //move the node corresponding to key to front
+            iter->second->second = value;                        //update value of the node
+            return;
+        }
+        if (cacheMap.size() == maxCapacity) //reached capacity
+        {
+           int key_to_del = cacheList.back().first; 
+           cacheList.pop_back();            //remove node in list;
+           cacheMap.erase(key_to_del);      //remove key in map
+        }
+        cacheList.emplace_front(key, value);  //create new node in list
+        cacheMap[key] = cacheList.begin();       //create correspondence between key and node
+    }
+
+private:
+    int maxCapacity;
+    unordered_map<int,  list<pair<int, int>>::iterator> cacheMap;
+    list<pair<int, int>> cacheList;                               
+};
+
+================================================
+class LRUCache{
 public:
 
     struct DLinkItem {
