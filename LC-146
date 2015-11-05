@@ -5,7 +5,103 @@
 // set(key, value) - Set or insert the value if the key is not already present. 
 // When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item. 
 
+=======================================
+// My solution: from bottom up
+class LRUCache{
 
+public:
+
+struct DListEntry {
+    int key;
+    int val;
+    DListEntry *prev;
+    DListEntry *next;
+    DListEntry(int k,int v) : key(k),val(v),prev(nullptr),next(nullptr) {}
+    
+    void SetValue(int v) {val = v;}
+    int  Key() {return key;}
+    int  Value() {return val;}
+};
+
+struct DList {
+    int        numEntries;
+    DListEntry *head;
+    DListEntry *tail;
+    
+    DList() : numEntries(0) {
+        // have an always exisiting head and tail to save if/else code
+        head = new DListEntry(-1,-1);  //dummy head
+        tail = new DListEntry(-1,-1);  //dummy tail
+        head->next = tail; 
+        tail->prev = head;
+    }
+    
+    ~DList() {delete head; delete tail;}
+    
+    int Numbers() {return numEntries;}
+    
+    void InsertHead(DListEntry *e) { //move entry e to head
+        head->next->prev = e;
+        e->next = head->next;
+        e->prev = head;
+        head->next = e;
+        ++numEntries;
+    }
+    
+    void RemoveEntry(DListEntry *e) {
+        e->prev->next = e->next;
+        e->next->prev = e->prev;
+        --numEntries;
+    }
+    
+    DListEntry * RemoveTail() {
+        DListEntry * e = tail->prev;
+        RemoveEntry(e); //this has to be used when capacity reaches maxCapacity
+                                 // so we don't check if it is an empty list for now
+        return e;
+    }
+};
+
+
+    LRUCache(int capacity) : maxCapacity(capacity) {}
+    
+    int get(int key) {
+        DListEntry *e = cacheMap[key];
+        if (e == nullptr) {
+            return -1;
+        }
+        cacheList.RemoveEntry(e);
+        cacheList.InsertHead(e);
+        return e->Value();
+    }
+    
+    void set(int key, int value) {
+        DListEntry *entry = cacheMap[key];
+        if (entry) { // key is in list
+            cacheList.RemoveEntry(entry);
+            cacheList.InsertHead(entry);
+            entry->SetValue(value);
+            return;
+        }
+        if (cacheList.Numbers() == maxCapacity) {
+            DListEntry *e = cacheList.RemoveTail();
+            cacheMap.erase(e->Key());
+            delete e;
+        }
+        entry = new DListEntry(key, value);
+        cacheList.InsertHead(entry);
+        cacheMap[key] = entry;
+    }
+    
+private:
+    int maxCapacity;
+    DList cacheList;
+    map<int, DListEntry *> cacheMap;
+}
+
+
+=============================================================
+// copy from others,  using exisiting list structure
 
 class LRUCache{
 
@@ -42,180 +138,4 @@ private:
     int maxCapacity;
     unordered_map<int,  list<pair<int, int>>::iterator> cacheMap;
     list<pair<int, int>> cacheList;                               
-};
-
-================================================
-class LRUCache{
-public:
-
-    struct DLinkItem {
-        int  key;
-        int  val;
-        DLinkItem *next;
-        DLinkItem *prev;
-        DLinkItem(int k, int v) : key(k),val(v),next(nullptr),prev(nullptr) {}
-        DLinkItem *Prev() {return prev;}
-        DLinkItem *Next() {return next;};
-    };
-    
-    struct DLink {
-        DLinkItem *head;  // have a dummy head for easy operations
-//        DLinkItem *tail;
-        int numItems;
-    
-        DLink() : numItems(0) {head = new DLinkItem(0,0);}    
-        int Numbers() {return numItems;}
-        DLinkItem *Head() {return head;}
-        void Remove(DLinkItem *item) {
-            if (item->next)
-                item->next->prev = item->prev;
-            item->prev->next = item->next;
-            if (head->prev == item) {
-                head->prev = item->prev;
-            }
-            
-            --numItems;
-        }
-        void AddHead(DLinkItem *item) {
-            item->prev = head;
-            item->next = head->next;
-            head->next = item;
-            ++numItems;
-        }
-    };
-    
-    
-    LRUCache(int capacity) : maxCapacity(capacity) {}
-    
-    int get(int key) {
-        DLinkItem *item = cacheMap[key];
-        if (item == nullptr) {
-            cout << "not found" << endl;
-            return -1;
-        }
-        
-        cacheList.Remove(item);
-        cacheList.AddHead(item);
-        cout << "f  " << item->val << endl;
-        return item->val;
-    }
-    
-    void set(int key, int value) {
-        DLinkItem *item = cacheMap[key];
-        if (item == nullptr) {
-            item = new DLinkItem(key, value);
-            cacheMap[key] = item;
-            if (cacheList.Numbers() == maxCapacity) {
-                //remove tail
-                cacheMap.erase(cacheList.Head()->Prev());
-                //cout << "head: " << head->key << " " << head->val << endl;
-                //cout << "tail: " << tail->key << " " << tail->val << endl;
-                cacheList.Remove(cacheList.Head()->Prev());
-            }
-            
-            cacheMap[key] = item;
-        } else { 
-            // take off the item and put it to head
-            cacheList.Remove(item);
-            item->val = value;
-        }
-        // insert item on the front of the list
-        cacheList.AddHead(item);
-    }
-    
-private:
-    int        maxCapacity;
-    DLink      cacheList;
-    map<int, DLinkItem*> cacheMap;
-};
-
-============================
-
-public:
-
-struct DLinkItem {
-        int key;
-        int val;
-        DLinkItem *prev;
-        DLinkItem *next;
-        DLinkItem(int k, int v) : key(k), val(v), prev(nullptr), next(nullptr) {}
-    };
-    
-    LRUCache(int capacity) : maxCapacity(capacity),numItems(0),head(nullptr),tail(nullptr) {
-    }
-    
-    int get(int key) {
-        DLinkItem *item = cacheMap[key];
-        if (item != nullptr) {
-            // item touched, need to append to tail to update LRU list
-            if (item != tail) {
-                if (item != head) { //if item is not head, item->prev can't be nullptr
-                    if (item->prev)
-                        item->prev->next = item->next;
-                } else if (item->next) { // item is head and not a single item in list
-                    head = item->next; 
-                }
-                tail->next = item;
-                item->prev = tail;
-                item->next = nullptr;
-                tail = item;
-            }
-          //  cout << "f..." << key << "  " << item->val << endl;
-            return item->val;
-        }
-//        cout <<"no f..." << endl;
-        return -1;
-    }
-    
-    void set(int key, int value) {
-        DLinkItem *item = cacheMap[key];
-
-        if (item == nullptr) {
-            if (numItems == maxCapacity) {
-                DLinkItem *h = head;
-                cacheMap.erase(head->key);
-                cout << "erase "  << head->key << endl;
-                head = head->next;
-                if (head)
-                    head->prev = nullptr;
-                delete h;
-                --numItems;
-            }
-            item = new DLinkItem(key,value);
-            cacheMap[key] = item;
-            ++numItems;
-        } 
-        if (item->val != value) {
-            item->val = value;
-        }
-        
-        if (head == nullptr) {
-            head = item;
-            tail = item;
-        } else if (item != tail) {
-            if (item != head) { 
-                // two situations here
-                // 1. item is an old item, so if it is not head, its prev is not null 
-                if (item->prev) {
-                    item->prev->next = item->next;
-                } //else { // it is a new item
-                  //item->prev = tail;
-                //}
-            } else if (item->next) { // item is head and not a single item in list
-                head = item->next; 
-            }
-            tail->next = item;
-            item->prev = tail;
-            item->next = nullptr;
-            tail = item;
-        }
-  //      cout << "num " << numItems << endl;
-    }
-    
-private:
-    int maxCapacity;
-    int numItems;
-    DLinkItem *head;
-    DLinkItem *tail;
-    map<int,DLinkItem*> cacheMap;
 };
