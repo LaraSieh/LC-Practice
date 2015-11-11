@@ -3,39 +3,52 @@
 // There are two sorted arrays nums1 and nums2 of size m and n respectively. 
 // Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
 
+//Binary search based on two conditions: 
+//1， (m/2 + n/2)?k；2，A[m/2] ? B[n/2];
 
-// still not working
+//If (m/2+n/2+1) > k && am/2 > bn/2 , drop Section 2
+//If (m/2+n/2+1) > k && am/2 < bn/2 , drop Section 4
+//If (m/2+n/2+1) < k && am/2 > bn/2 ,  drop Section 3
+//If (m/2+n/2+1) < k && am/2 < bn/2 ,  drop Section 1
+
+class Solution {
 public:
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
         size_t len1 = nums1.size();
         size_t len2 = nums2.size();
         
-        if ((len1+len2) & 1) {
+        if ((len1+len2) & 1) { // odd
             return GetKth(nums1,nums2,0,len1, 0,len2,(len1+len2)/2+1);
-        } else {
+        } else {  // even
             return (GetKth(nums1,nums2,0,len1,0,len2,(len1+len2)/2) 
             + GetKth(nums1,nums2,0,len1,0,len2,(len1+len2)/2+1)) / 2.;
         }
     }
     
     int GetKth(vector<int>& nums1, vector<int>& nums2, int s1, int l1, int s2, int l2, int k) {
-        if (l1 <= 0 ) return nums2[k-s1-1];
-        if (l2 <= 0)  return nums1[k-s2-1];
-        if (s1+s2 >= k) return min(nums1[s1],nums2[s2]);
+        if (l1 <= 0 ) return nums2[s2+k-1];
+        if (l2 <= 0)  return nums1[s1+k-1]; 
+        if (k<=1) return min(nums1[s1],nums2[s2]);
         
         if (nums1[s1+l1/2] > nums2[s2+l2/2]) {
             if ( (l1/2+l2/2+1) < k ) // drop section 3
             {
-                return GetKth(nums1,nums2,s1,l1,s2+l2/2+1,l2-(l2/2+1),k);
-                
+                 s2 = s2+l2/2+1;
+                 k = k-(l2/2+1);
+                 l2 = l2-(l2/2+1);
             } else {      // drop section 2
-                return GetKth(nums1,nums2,s1,l1/2,s2,l2,k);
+                l1 = l1/2;
             }
         } else {
             if ((l1/2+l2/2+1) < k) { //dorp section 1
-               return GetKth(nums1,nums2, s1+l1/2+1, l1-(l1/2+1),s2,l2,k); 
-            } else {  // drop section 2
-                return GetKth(nums1,nums2,s1,l1,s2,l2/2,k);
+                s1 = s1+l1/2+1;
+                k = k-(l1/2+1);
+                l1 = l1-(l1/2+1);
+            } else {  // drop section 4
+                l2 = l2/2;
             }
         }
+     
+        return GetKth(nums1,nums2,s1,l1,s2,l2,k);
     }
+};
