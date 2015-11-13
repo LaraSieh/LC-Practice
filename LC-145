@@ -41,3 +41,26 @@ public:
 
     }
 };
+
+
+//Recursive method
+
+void postorderWorker(TreeNode *t, vector<int>& ret) {
+        if (t == NULL) return;
+        
+        if (t->left) {
+            postorderWorker(t->left, ret);
+        } 
+        if (t->right) {
+            postorderWorker(t->right, ret);
+        } 
+        
+        ret.push_back(t->val);
+    }
+    
+    vector<int> postorderTraversal(TreeNode* root) {
+            vector<int> ret;
+   
+        postorderWorker(root, ret);
+        return ret;
+    }
