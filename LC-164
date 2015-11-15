@@ -1,0 +1,42 @@
+//Maximum Gap
+
+// Given an unsorted array, find the maximum difference between the successive elements in its sorted form.
+// Try to solve it in linear time/space.
+// Return 0 if the array contains less than 2 elements.
+
+// You may assume all elements in the array are non-negative integers and fit in the 32-bit signed integer range.
+
+/* solution hints (copied) 
+Suppose you have n pigeons with labels and you put them into m holes based on their label with each hole of the same size. 
+Why bother putting pigeons into holes? Because you want to disregard the distance between pigeons within each one hole. 
+
+Only when at least one hole is empty can we disregard the distance between pigeons within each one hole and compute 
+the maximum gap solely by the distance between pigeons in adjacent holes. We make sure that at least one hole 
+is empty by using m=n-1 (i.e. n-2 pigeons in n-1 holes => at least one hole is empty).
+*/
+
+class Solution {
+public:
+    int maximumGap(vector<int>& nums) {
+        const size_t n = nums.size();
+        if(n<=1) return 0;
+        int maxE = *max_element(nums.begin(),nums.end());
+        int minE = *min_element(nums.begin(),nums.end());
+        double len = double(maxE-minE)/double(n-1);
+        if (len==0) return 0;
+        vector<int> maxA(n,INT_MIN);
+        vector<int> minA(n,INT_MAX);
+        for(int i=0; i<n; i++) {
+            int index = (nums[i]-minE)/len;
+            maxA[index] = max(maxA[index],nums[i]);
+            minA[index] = min(minA[index],nums[i]);
+        }
+        int gap = 0, prev = maxA[0];
+        for(int i=1; i<n; i++) {
+            if(minA[i]==INT_MAX) continue;
+            gap = max(gap,minA[i]-prev);
+            prev = maxA[i];
+        }
+        return gap;
+    }
+};
