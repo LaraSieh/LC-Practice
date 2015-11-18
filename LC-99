@@ -1,0 +1,49 @@
+// Recover Binary Search Tree
+// Two elements of a binary search tree (BST) are swapped by mistake.
+// Recover the tree without changing its structure.
+
+//Note:
+//A solution using O(n) space is pretty straight forward. Could you devise a constant space solution?
+//confused what "{1,#,2,3}" means? > read more on how binary tree is serialized on OJ.
+
+
+
+
+
+
+
+// this solution uses o(n) space.  However it works for any number of misplaced elements
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void recoverTree(TreeNode* root) {
+        if (root == NULL) return;
+        
+        vector<int> vallist;
+        vector<TreeNode *> nodelist;
+        
+        InOrderTraversal(root, nodelist, vallist);
+        sort(vallist.begin(),vallist.end());
+        for (size_t i=0; i<vallist.size(); ++i) {
+            nodelist[i]->val = vallist[i];
+        }
+    }
+    
+    void InOrderTraversal(TreeNode *root, vector<TreeNode *>& nodes, vector<int>& vals) {
+        
+        if (root->left) 
+            InOrderTraversal(root->left, nodes, vals);
+        nodes.push_back(root);
+        vals.push_back(root->val);
+        if (root->right) 
+            InOrderTraversal(root->right, nodes, vals);
+    }    
+};
