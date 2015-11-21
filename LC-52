@@ -1,0 +1,41 @@
+// N-Queens II
+//Follow up for N-Queens problem.
+// Now, instead outputting board configurations, return the total number of distinct solutions.
+
+
+class Solution {
+public:
+    int total = 0;
+    
+    int totalNQueens(int n) {
+        vector<int>  qipan(n,-1);
+        
+        dfs(qipan, n, 0);
+        return total;
+    }
+    
+    void dfs(vector<int>& q, int n, int row) {
+        if (row == n) {
+            ++total;
+            return;
+        }
+        
+        for (int i=0; i<n; ++i) {
+            if (canPut(q,n,row,i)) {
+                q[row] = i;
+                dfs(q,n,row+1);
+                q[row] = -1;
+            }
+        }
+    }
+    
+    bool canPut(vector<int>& q, int n, int row, int col) {
+        for (int i=0; i<row; ++i) {
+            if (q[i] == col || abs(row-i) == abs(col - q[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
