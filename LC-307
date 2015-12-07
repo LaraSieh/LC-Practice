@@ -1,0 +1,35 @@
+
+
+
+
+
+
+
+
+
+
+// This one won't pass tests as it's too slow (exceeds time limit), but it's straightforward
+class NumArray {
+public:
+    NumArray(vector<int> &nums) {
+        int s=0;
+        sums.push_back(s);
+        for (size_t i=0; i<nums.size(); ++i) {
+            sums.push_back(s);
+        }
+        
+    }
+    void update(int i, int val) {
+        int delta = val - (sums[i+1]-sums[i]);
+        for (size_t index=i; index < sums.size(); ++index) {
+            sums[index] += delta;
+        }
+    }
+
+    int sumRange(int i, int j) {
+        return (sums[j+1] - sums[i]);
+    }
+    
+private:
+    vector<int> sums;
+};
