@@ -35,16 +35,9 @@ public:
                     }
                 }
                 
-                count -= board[i][j] & 0x1;
-                if (count < 2 || count > 3) count = 0;
-                else if (board[i][j] == 1) 
-                {
-                    count = 1;  // neighbour is 2 or 3, always live
-                } else {
-                    count = (count == 2) ? 0 : 1;
+                if(count == 3 || count - board[i][j] == 3) {
+                    board[i][j] = board[i][j] | 0x2;
                 }
-                
-                board[i][j] = board[i][j] | ( count << 1);
             }
         }
         
