@@ -1,0 +1,46 @@
+# Ugly Number 2
+// Write a program to find the n-th ugly number. 
+// Ugly numbers are positive numbers whose prime factors only include 2, 3, 5. For example, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 is the sequence of the first 10 ugly numbers. 
+// Note that 1 is typically treated as an ugly number. 
+
+
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> products;
+        products.push_back(1);
+        
+        int n2=0, n3=0, n5=0;
+        while (products.size() < n) {
+            int mul2 = products[n2] * 2;
+            int mul3 = products[n3] * 3;
+            int mul5 = products[n5] * 5;
+            int mul =  min(min(mul2,mul3),mul5);
+            
+            // must check all to avoid duplicates
+            if (mul == mul2) ++n2;
+            if (mul == mul3) ++n3;
+            if (mul == mul5) ++n5;
+            
+            products.push_back(mul);
+        }
+        return products.back();
+    }
+};
+
+
+//  copied from leetcode, very clean
+struct Solution {
+    int nthUglyNumber(int n) {
+        vector <int> results (1,1);
+        int i = 0, j = 0, k = 0;
+        while (results.size() < n)
+        {
+            results.push_back(min(results[i] * 2, min(results[j] * 3, results[k] * 5)));
+            if (results.back() == results[i] * 2) ++i;
+            if (results.back() == results[j] * 3) ++j;
+            if (results.back() == results[k] * 5) ++k;
+        }
+        return results.back();
+    }
+};
