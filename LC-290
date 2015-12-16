@@ -61,3 +61,23 @@ public:
         return true;
     }
 };
+
+// short version, very clean, copied from discussion
+
+bool wordPattern(string pattern, string str) {
+        istringstream ss(str);
+        string word;
+        unordered_map<char, string> p2strmap;
+        unordered_map<string, char> str2pmap;
+
+        for (char c : pattern)
+        {
+            if (! (getline(ss, word, ' ')))
+                return false;
+            if ( p2strmap.emplace(c,word).first->second != word)
+                return false;
+            if (str2pmap.emplace(word,c).first->second != c)
+                return false;
+        }
+    return ! getline(ss, word, ' ');
+    }
