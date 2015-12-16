@@ -1,0 +1,33 @@
+# Single number 2
+
+Given an array of integers, every element appears three times except for one. Find that single one. 
+
+Note:
+ Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory? 
+
+
+// slow but direct solution
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res=0, mask = 1, intBits = sizeof(int)*8;
+        int bits[intBits] = {0};
+     
+        for (int i=0; i < nums.size(); ++i)
+        {
+            mask = 1;
+            for (int j=0; j < intBits; ++j)
+            {
+                bits[j] += (nums[i] & mask) >> j;
+                mask <<= 1;
+            }
+        }
+     
+        for (int j=0; j < intBits; ++j)
+        {
+            res |= (bits[j] % 3) << j; 
+        }
+     
+        return res;
+    }
+};
