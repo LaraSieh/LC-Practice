@@ -1,0 +1,57 @@
+
+
+// should be correct one but not passing time requirement :(
+
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        int n=words.size(), mult = 0;
+        
+        for (int i=0; i<n; ++i) {
+            int alpha[26] = {0};
+            int l1 = words[i].size();
+
+            for (int j=0; j<l1; ++j) {
+                ++alpha[words[i][j]-'a'];
+            }
+            
+            for (int j=0; j<n; ++j) {
+                int k=0, l2 = words[j].size();
+                while (k<l2 && (alpha[words[j][k]-'a'] == 0)) {
+                    ++k;
+                }
+                if (k == l2) {
+                    mult = max(l1*l2, mult);            
+                } 
+            } 
+        }   
+        
+        return mult;
+    }
+};
+
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        int n=words.size(), mult = 0;
+        vector<unsigned int> bits(n,0);  // each bit represents the existence of char in each string
+        vector<int> lengths(n,0);
+        
+        for (int i=0; i<n; ++i) {
+            lengths[i] = words[i].size();
+            for (int j=0; j<lengths[i]; ++j) {
+                bits[i] |= (0x1 << (words[i][j]-'a'));
+            }
+        }
+        
+        for (int i=0; i<n; ++i) {
+            for (int j=i+1; j<n; ++j) {
+                if (!(bits[i] & bits[j])) {
+                    mult = max(mult, lengths[i]*lengths[j]);
+                }
+            }
+        }
+        return mult;
+      }
+    };    
+// accepted solution, using bits
