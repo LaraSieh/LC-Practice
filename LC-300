@@ -32,3 +32,38 @@ public:
         return ret;
     }
 };
+
+
+//  Onlog(n),  algorith explained here http://www.algorithmist.com/index.php/Longest_Increasing_Subsequence
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        const int len = nums.size();
+        if(len < 2)  return len;
+        
+        vector<int> A(len+1,0);
+        int ret = 1;
+        
+        A[1] = nums[0];
+        for(int i = 1; i < len; i++){
+            int temp = biSearch(A,ret,nums[i]);
+            A[temp] = nums[i];
+            if(ret < temp)  ret = temp;
+        }
+        return ret;
+    }
+
+    int biSearch(vector<int>& A, int n, int target){  // to find the right bound
+        int left = 1, right = n;
+        while(left <= right){
+            int mid = (left + right)/2;
+            if(A[mid] > target)
+                right = mid - 1;
+            else if(A[mid] < target)
+                left = mid + 1;
+            else 
+                return mid;
+        }
+        return left;   
+    }    
+};   
