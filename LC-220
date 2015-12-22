@@ -25,3 +25,22 @@ public:
         return false;
     }
 };
+
+// if using the index number as first comparison, the time will exceed limits.  guess too many comparisons.
+vector<pair<int,long>> v;
+        int n = nums.size();
+        for (int i=0; i<n; ++i) {
+            v.push_back(pair<int,long>(i,(long)nums[i]));
+        }
+        sort(v.begin(),v.end(),
+            [](pair<int,long> i, pair<int,long> j) {
+               return i.first < j.first; });
+        
+        for (int i=0,j; i<n; ++i) {
+            j = i+1;
+            while(j<v.size() && v[j].first-v[i].first <= k) {
+                if (abs(v[j].second - v[i].second) <= t) return true;
+                ++j;
+            }
+        }
+
