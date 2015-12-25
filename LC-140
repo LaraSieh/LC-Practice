@@ -1,0 +1,102 @@
+# Word break
+
+Given a string s and a dictionary of words dict, add spaces in s to construct a sentence where each word is a valid dictionary word. 
+
+Return all such possible sentences. 
+
+For example, given
+s = "catsanddog",
+dict = ["cat", "cats", "and", "sand", "dog"]. 
+
+A solution is ["cats and dog", "cat sand dog"]. 
+
+
+[Sol 1] Should be correct but time exceeds on some cases
+struct TrieNode {
+    TrieNode() : isWord(false) { memset(children,0,sizeof(TrieNode*)*26);}
+    
+    bool     isWord;
+    TrieNode *children[26];
+};
+
+class Trie {
+public:
+    Trie() { root = new TrieNode();}
+    
+    void AddWord(string word) {
+        TrieNode *cur = root;
+        for (auto c : word) {
+            int index = (int)(c - 'a');
+            if (cur->children[index] == nullptr) {
+                cur->children[index] = new TrieNode();
+            }
+            cur = cur->children[index];
+        }
+        cur->isWord = true;
+    }
+    
+    bool Lookup(string word) {
+        TrieNode *cur = root;
+        for (auto c : word) {
+            int index = (int)(c - 'a');
+            if (cur->children[index] == nullptr) {
+                return false;
+            }
+            cur = cur->children[index];
+        }
+        return cur->isWord;
+    }
+    
+    bool StartWith(string word) {
+        TrieNode *cur = root;
+        for (auto c : word) {
+            int index = (int)(c - 'a');
+            if (cur->children[index] == nullptr) return false;
+            cur = cur->children[index];
+        }
+        return true;
+    }
+    
+private:
+    TrieNode *root;
+}; 
+
+
+class Solution {
+public:
+    void BreakWords(string s, string& cur, vector<string>& ret) {
+        for (int i=1; i<=s.size(); ++i) {
+            string sub = s.substr(0,i);
+            if (trie.Lookup(sub)) {
+                cur += sub;
+                if (i==s.size()) {
+                    ret.push_back(cur);
+                } else {
+                    cur += ' ';
+                    BreakWords(s.substr(i),cur,ret);
+                }
+            }
+        }
+        
+        cur = "";
+        return;
+    }
+    
+
+    vector<string> wordBreak(string s, unordered_set<string>& wordDict) {
+        vector<string> ret;
+        
+        // build dictionary
+        for (auto it=wordDict.begin(); it!=wordDict.end(); ++it) {
+            trie.AddWord(*it);
+        }
+        
+        string cur;
+        BreakWords(s, cur, ret);
+        
+        return ret;
+    }
+    
+private:
+    Trie trie;
+};
