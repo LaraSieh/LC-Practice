@@ -10,8 +10,48 @@ dict = ["cat", "cats", "and", "sand", "dog"].
 
 A solution is ["cats and dog", "cat sand dog"]. 
 
+// copied from discussion
+class Solution {
+public:
+    vector<string> wordBreak(string s, unordered_set<string>wordDict) {
+        int n = s.size();
+        vector<bool> dp(n+1, false);
+        dp[0] = true;
+        for(int i=1; i <= n; ++i) {
+            for(int j=i-1; j >= 0; --j) {
+                if(dp[j] && wordDict.find(s.substr(j, i-j)) != wordDict.end()) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        if(!dp[s.size()]) return {};
 
-[Sol 1] Should be correct but time exceeds on some cases
+        vector<string> ret;
+        wordBreak(s, 0, wordDict, dp, "", ret);
+        return ret;
+    }
+    
+    void wordBreak(const string &s, int begin, unordered_set<string> &wordDict, vector<bool> &dp, string str, vector<string> &ret)
+    {
+        if(begin == s.size())
+        {
+            ret.push_back(str.substr(0, str.size() - 1));  //eliminate the last space
+            return;
+        }
+
+        for(int i=begin + 1; i <= s.size(); ++i)
+         //We only go further for certain cases
+            if(dp[i] && wordDict.find(s.substr(begin, i - begin)) != wordDict.end()) 
+                wordBreak(s, i, wordDict, dp, str + s.substr(begin, i - begin) + " ", ret);
+    }
+};
+
+
+
+
+
+// This solution should be correct but time exceeds on some cases, for example, "aaaaaaa....", "a", "aa", "aaa" ...
 struct TrieNode {
     TrieNode() : isWord(false) { memset(children,0,sizeof(TrieNode*)*26);}
     
