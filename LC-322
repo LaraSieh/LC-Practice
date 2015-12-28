@@ -1,0 +1,66 @@
+# 
+
+
+// 224 ms
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> minTotal(amount+1,-1);
+        sort(coins.begin(), coins.end());
+        
+        minTotal[0] = 0;
+        for (int i=1;i<=amount;++i) {
+            for (int j=0; j<coins.size(); ++j) {
+                if (coins[j] > i) continue;
+                int index = i - coins[j];
+                if (minTotal[index] != -1) {
+                    minTotal[i] = minTotal[i] == -1 ? minTotal[index]+1 : 
+                        min(minTotal[index]+1, minTotal[i]);
+                }
+            }
+        }
+        
+        return minTotal[amount];
+    }
+};
+
+
+// 184 ms
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> minTotal(amount+1,-1);
+        sort(coins.begin(), coins.end());
+        
+        minTotal[0] = 0;
+        for (int i=1;i<=amount;++i) {
+            for (int j=0; coins[j] <= i && j<coins.size(); ++j) {
+                int index = i - coins[j];
+                if (minTotal[index] != -1) {
+                    minTotal[i] = minTotal[i] == -1 ? minTotal[index]+1 : 
+                        min(minTotal[index]+1, minTotal[i]);
+                }
+            }
+        }
+        
+        return minTotal[amount];
+    }
+};
+
+// 160 ms
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> minTotal(amount+1,amount+1);
+        sort(coins.begin(), coins.end());
+        
+        minTotal[0] = 0;
+        for (int i=1;i<=amount;++i) {
+            for (int j=0; coins[j] <= i && j<coins.size(); ++j) {
+                minTotal[i] = min(minTotal[i-coins[j]]+1, minTotal[i]);
+            }
+        }
+        
+        return minTotal[amount] == amount+1 ? -1 : minTotal[amount];
+    }
+};
