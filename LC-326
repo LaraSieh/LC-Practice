@@ -12,3 +12,13 @@ public:
         return n>0 && maxPowerThree%n == 0;
     }
 };
+
+
+// if i run loop, the time varies but not necessary slower than the above
+        if (n<=0) return false;
+        
+        while (n%3 == 0) {
+            n = n/3;
+        }
+        
+        return n==1;
