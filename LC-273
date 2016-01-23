@@ -1,0 +1,50 @@
+273. Integer to English Words
+Convert a non-negative integer to its english words representation. Given input is guaranteed to be less than 231 - 1.
+
+For example,
+123 -> "One Hundred Twenty Three"
+12345 -> "Twelve Thousand Three Hundred Forty Five"
+1234567 -> "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
+
+
+
+class Solution {
+public:
+    string numberToWords(int num) {
+        vector<string> secNames  = {""," Thousand"," Million"," Billion"};
+        vector<int> secs(4,0);
+        string ret;
+        
+        int i=0;
+        while (num && i<secs.size()) {
+            secs[i] = num % 1000;
+            if (secs[i]>0) {
+                ret = readThousand(secs[i]) + secNames[i] + ret;
+            }
+            num /= 1000;
+            ++i;
+        }
+        return ret.empty() ? "Zero" : ret.substr(1);
+    }
+    
+    string readThousand(int input) {
+        const vector<string> digit = {""," One"," Two"," Three"," Four"," Five"," Six"," Seven"," Eight"," Nine"};
+        const vector<string> teens = {" Ten"," Eleven"," Twelve"," Thirteen"," Fourteen", " Fifteen", " Sixteen", " Seventeen", " Eighteen", " Nineteen"};
+        const vector<string> tys = {"",""," Twenty"," Thirty"," Forty"," Fifty"," Sixty"," Seventy"," Eighty"," Ninety"};
+        string ret;
+                
+        int hun = input / 100;
+        input = input % 100;
+        if (hun >= 1) ret += digit[hun] + " Hundred";
+
+        int tens = input / 10;
+        input = input % 10;
+        if (tens == 1) {
+            ret += teens[input];
+            return ret;
+        } else {
+            ret += tys[tens] + digit[input];
+        }
+        return ret;
+    }
+};
