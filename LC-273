@@ -48,3 +48,79 @@ public:
         return ret;
     }
 };
+
+
+// another way
+
+class Solution {
+public:
+    const vector<string> oneToNineteen={
+        "",
+        " One",
+        " Two",
+        " Three",
+        " Four",
+        " Five",
+        " Six",
+        " Seven",
+        " Eight",
+        " Nine",
+        " Ten",
+        " Eleven",
+        " Twelve",
+        " Thirteen",
+        " Fourteen",
+        " Fifteen",
+        " Sixteen",
+        " Seventeen",
+        " Eighteen",
+        " Nineteen"};
+    const vector<string> twentyToNinety={
+         "",
+        " Ten",
+        " Twenty",
+        " Thirty",
+        " Forty",
+        " Fifty",
+        " Sixty",
+        " Seventy",
+        " Eighty",
+        " Ninety"
+    };
+    
+    string numberToWords(int num) {
+        if (num == 0) return "Zero";
+        string ret;
+        
+        convert(num,ret);
+        ret.erase(0,1);
+        return ret;
+    }
+    
+    void convert(int n, string& r) {
+        if (n==0) {
+            return;
+        }
+        if (n<20) {
+            r += oneToNineteen[n];
+        } else if (n<100) {
+            r += twentyToNinety[n/10];
+            convert(n%10, r);
+        } else if (n<1000) {
+            r += oneToNineteen[n/100] + " Hundred";
+            convert(n%100,r);
+        } else if (n<1000000) {
+            convert(n/1000,r);
+            r += string(" Thousand");
+            convert(n%1000,r);
+        } else if (n<1000000000) {
+            convert(n/1000000,r);
+            r += string(" Million");
+            convert(n%1000000, r);
+        } else {
+            convert(n/1000000000,r);
+            r += string(" Billion");
+            convert(n%1000000000,r);
+        }
+    }
+};
