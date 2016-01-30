@@ -67,3 +67,53 @@ public:
         return ret;
     }
 };
+
+
+//second version
+class Solution {
+public:
+    int calculate(string s) {
+        int ret=0, num1=0, num2=0, sign=1;
+        bool second = false, bMul=true;
+        
+        for (int i=0; i<s.length(); ++i) {
+            char c = s[i];
+            if (isdigit(c)) {
+                if (second == false) {
+                    num1 = num1*10 + c - '0';
+                } else {
+                    num2 = num2*10 + c - '0';
+                }
+            } else if (c=='+' || c=='-' || c=='*' || c=='/') {
+                if (second) {
+                   //finish up the early multiplication
+                    if (bMul) {
+                        num1 = num1*num2;
+                    } else {
+                        num1 = num1/num2;
+                    }
+                    num2=0;
+                }
+                if (c=='+' || c=='-') {
+                    ret += sign*num1;
+                    num1 = 0;
+                    sign = c=='+' ?  1 : -1;
+                    second = false;
+                } else {
+                    bMul = c == '*' ? true : false;
+                    second = true;
+                }
+            }
+        }
+        
+        if (second) {
+            if (bMul) {
+                num1 = num1*num2;
+            } else {
+                num1 = num1/num2;
+            } 
+        }
+        ret += sign*num1;
+        return ret;
+    }
+};
