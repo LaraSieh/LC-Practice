@@ -1,0 +1,69 @@
+227. Basic Calculator II
+Implement a basic calculator to evaluate a simple expression string.
+
+The expression string contains only non-negative integers, +, -, *, / operators and empty spaces . The integer division should truncate toward zero.
+
+You may assume that the given expression is always valid.
+
+Some examples:
+"3+2*2" = 7
+" 3/2 " = 1
+" 3+5 / 2 " = 5
+Note: Do not use the eval built-in library function.
+
+// first version
+class Solution {
+public:
+    int calculate(string s) {
+        int ret=0, num1=0, num2=0, sign=1;
+        bool second = false, bMul=true;
+        
+        for (int i=0; i<s.length(); ++i) {
+            char c = s[i];
+            if (isdigit(c)) {
+                if (second == false) {
+                    num1 = num1*10 + c - '0';
+                } else {
+                    num2 = num2*10 + c - '0';
+                }
+            } else if (c=='+' || c=='-') {
+                if (second) {
+                   //finish up the early multiplication
+                    if (bMul) {
+                        num1 = num1*num2;
+                    } else {
+                        num1 = num1/num2;
+                    }
+                }
+                // back to initial state
+                ret += sign*num1;
+                sign = c=='+' ?  1 : -1;
+                num1 = 0;
+                num2 = 0;
+                second = false;
+            } else if (c=='*' || c=='/') {
+                if (second) {
+                  if (bMul) {
+                        num1 = num1*num2;
+                    } else {
+                        num1 = num1/num2;
+                    }
+                    num2 = 0;
+                } else {
+                    second = true;
+                }
+                bMul = c == '*' ? true : false;
+            }
+        }
+        
+        if (second) {
+            if (bMul) {
+                num1 = num1*num2;
+            } else {
+                num1 = num1/num2;
+            } 
+        }
+        ret += num1*sign;
+        return ret;
+    }
+};
