@@ -26,3 +26,25 @@ public:
         return dp[n-1];
     }
 };
+
+// mimic human being's logic
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int n = nums.size();
+        if (n<=1) return 0;
+        
+        int steps=1,head=0,tail=nums[0];
+        while (tail<n-1) {
+            int save=tail;
+            ++steps;
+            
+            for (int j=head; j <= save; ++j) {
+                tail=max(tail,j+nums[j]);
+                if (tail>=n-1) return steps;
+            }
+            head = save+1;
+        }
+        return steps;
+    }
+};
