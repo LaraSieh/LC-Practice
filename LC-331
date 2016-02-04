@@ -28,6 +28,9 @@ Example 3:
 "9,#,#,1"
 Return false
 
+// This solution is based on this Theorem
+Theorem 5.1 Full Binary Tree Theorem: The number of leaves in a non-empty full binary tree is 
+one more than the number of internal nodes
 
 
 class Solution {
