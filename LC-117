@@ -26,6 +26,7 @@ After calling your function, the tree should look like:
      / \    \
     4-> 5 -> 7 -> NULL
 
+// straight forward using  queue but not constant extra spaces
 
 /**
  * Definition for binary tree with next pointer.
@@ -61,3 +62,28 @@ public:
         }
     }
 };
+
+// from discussion, constant space
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        if (root==NULL) return;
+        
+        TreeLinkNode head(INT_MIN), *cur = root;
+        while (cur) {
+            for ( TreeLinkNode *pre = &head; cur; cur = cur->next) {
+                if (cur->left) {
+                    pre->next = cur->left;
+                    pre = pre->next;
+                }
+                if (cur->right) {
+                    pre->next = cur->right;
+                    pre = pre->next;
+                }
+            }
+        
+            cur = head.next;  //loop this level
+            head.next = nullptr;  //reset head for next level
+        }
+    }
+ }
