@@ -1,0 +1,54 @@
+301. Remove Invalid Parentheses
+Remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
+
+Note: The input string may contain letters other than the parentheses ( and ). 
+
+Examples:
+
+"()())()" -> ["()()()", "(())()"]
+"(a)())()" -> ["(a)()()", "(a())()"]
+")(" -> [""]
+
+// difficult for me, copied from discussion. not fully understand yet.
+
+class Solution {
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> ret;
+        string path;
+        dfs(s,ret,path,0,0,0);
+        
+        if (ret.empty()) return {""};
+        return ret;
+    }
+    
+    void dfs(const string& s,vector<string>& ret,string& path,int index,int l,int r)
+    {
+        if (r>l) return;
+        
+        if (index==s.size()) {
+            if (l==r && (ret.empty() || path.size()==ret[0].size()))
+                ret.push_back(path);
+            return;
+        }
+        
+        if (!ret.empty())
+            if (path.size()+s.size()-index < ret[0].size()) return;
+            
+        char c=s[index++];
+        path.push_back(c);
+        if (c =='(') {
+            dfs(s,ret,path,index,l+1,r);
+        } else if (c==')') {
+            dfs(s,ret,path,index,l,r+1);
+        } else
+            dfs(s,ret,path,index,l,r);
+        
+        path.pop_back();
+        if (c == '(' || c == ')') {
+            while(c==s[index]) ++index;
+            dfs(s,ret,path,index,l,r);
+        } else
+            dfs(s,ret,path,index,l,r);
+    }
+};
