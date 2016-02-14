@@ -1,0 +1,28 @@
+85. Maximal Rectangle
+Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing all ones and return its area. 
+
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+         if (matrix.size()==0) return 0;
+        int m = matrix.size(),n = matrix[0].size(), area=0;
+        
+        vector<int> height(n,0);
+        
+        for (int i=0; i<m; ++i) {
+            for (int j=0;j<n;++j) {
+                if (matrix[i][j] == '0') {
+                    height[j] = 0;
+                } else {
+                    ++height[j];
+                    for (int k=j,pre=height[j];k>=0;--k) {
+                        if (height[k]==0) break;
+                        pre = min(pre,height[k]);
+                        area = max(area,(j-k+1)*pre);
+                    }
+                }
+            }
+        }
+        return area;
+    }
+};
