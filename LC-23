@@ -1,0 +1,47 @@
+// 23. Merge k Sorted Lists
+
+//using priority queue, copied from discussion
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int k=lists.size(); 
+        if (k==0) return NULL;
+        
+        ListNode dummy(0);
+        ListNode *cur = &dummy;
+        priority_queue<ListNode *,vector<ListNode *>, compare> q;
+        
+        for (auto list : lists) {
+            if (list) q.push(list); //<==checking if list is null is important
+        }
+        
+        while(!q.empty()) {
+            ListNode *node=q.top();
+            q.pop();
+            
+            cur->next = node;
+            cur = node;
+            
+            if (node->next) {
+                q.push(node->next);
+            }
+        }
+        return dummy.next;
+    }
+    
+private:
+    struct compare {
+        bool operator ()(const ListNode *a, const ListNode *b) {
+            return a->val > b->val;
+        }
+    };
+};
+
