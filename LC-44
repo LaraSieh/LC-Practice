@@ -1,0 +1,74 @@
+44. Wildcard Matching
+Implement wildcard pattern matching with support for '?' and '*'.
+
+'?' Matches any single character.
+'*' Matches any sequence of characters (including the empty sequence).
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "*") → true
+isMatch("aa", "a*") → true
+isMatch("ab", "?*") → true
+isMatch("aab", "c*a*b") → false
+
+
+// My solution, TLE :(
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        return isMatchRecursive(s,p,0,0);
+    }
+    
+private:
+    bool isMatchRecursive(string& s, string&p, int is, int ip) {
+        if (is == s.size() && ip == p.size()) return true;
+        
+        if (p[ip] == '?' || (p[ip] != '*' && s[is] == p[ip])) 
+            return isMatchRecursive(s,p,is+1,ip+1);
+        else if (p[ip] == '*') {
+            if (ip == p.size()-1) return true;
+            for (int i=0; i<(int)s.size()-is; ++i) {
+                if (isMatchRecursive(s,p,is+i,ip+1)) return true;
+            }
+        } else if (s[is] != p[ip]) 
+            return false;
+            
+        return false;
+    }
+};
+
+// working one
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int is=0,ip=0;
+        int ns=s.size(), np=p.size();
+        
+        int star=-1,mark=-1;
+        while (is < ns) {
+            if ((ip<np) && (s[is]==p[ip] || p[ip]=='?')) {
+                ++is; ++ip;
+            } else if (ip<np && p[ip]=='*') {
+                star = ip++; 
+                mark = is;
+            } else if (star != -1) {
+                ip = star+1;
+                is = ++mark;
+            } else 
+                return false;
+        }
+        while (ip < np) {
+            if (p[ip]=='*') ++ip;
+            else 
+                return false;
+        }
+        return true;
+    }
+};
