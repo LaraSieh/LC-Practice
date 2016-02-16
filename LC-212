@@ -1,0 +1,122 @@
+212. Word Search II
+Given a 2D board and a list of words from the dictionary, find all words in the board.
+
+Each word must be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+
+For example,
+Given words = ["oath","pea","eat","rain"] and board =
+
+[
+  ['o','a','a','n'],
+  ['e','t','a','e'],
+  ['i','h','k','r'],
+  ['i','f','l','v']
+]
+Return ["eat","oath"].
+
+
+// my solution, performance to be tuned
+class Solution {
+public:
+    struct TrieNode {
+        TrieNode *children[26];
+        bool    isWord;
+        TrieNode() : isWord(false) {memset(children,0,sizeof(children));}
+    };
+    
+    void Insert(string word) {
+        TrieNode *node=&root;
+ 
+        for (size_t i=0; i<word.size(); ++i) {
+            int index = word[i] - 'a';
+            if (node->children[index]==NULL) {
+                node->children[index] = new TrieNode();
+            }
+            node = node->children[index];
+        }
+        node->isWord = true;
+    }
+    
+    void Remove(string word) {
+        TrieNode *node=&root;
+ 
+        for (size_t i=0; i<word.size(); ++i) {
+            int index = word[i] - 'a';
+            if (node->children[index]==NULL) {
+                return;
+            }
+            node = node->children[index];
+        }
+        node->isWord = false;
+    }
+    
+    bool IsWord(string word) {
+        TrieNode *node = &root;
+        for (size_t i=0; i<word.size(); ++i) {
+            int index = word[i] - 'a';
+            if (node->children[index]==NULL) {
+                return false;
+            }
+            node = node->children[index];
+        }
+        return node->isWord;
+    }
+    
+    bool IsPrefix(string word) {
+        TrieNode *node = &root;
+        for (size_t i=0; i<word.size(); ++i) {
+            int index = word[i] - 'a';
+            if (node->children[index]==NULL) {
+                return false;
+            }
+            node = node->children[index];
+        }
+        return true;
+    }
+    
+    void dfs(vector<vector<char>>& board,int m,int n,set<string>& sset, string& s, int x, int y) {
+        if (!s.empty()) {
+            if (IsWord(s)) {
+                sset.insert(s);
+                Remove(s);
+            }
+            if (!IsPrefix(s)) return;
+        }
+        
+        if (x<0 || x>=m || y<0 || y>=n || board[x][y]=='*') return;
+        
+        char c = board[x][y];
+        board[x][y] = '*';
+        s.push_back(c);        
+        dfs(board,m,n,sset,s,x+1,y);
+        dfs(board,m,n,sset,s,x-1,y);
+        dfs(board,m,n,sset,s,x,y+1);
+        dfs(board,m,n,sset,s,x,y-1);
+        s.pop_back();
+        
+        board[x][y] = c;
+    }
+    
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        vector<string> find;
+        if (board.size()==0 || board[0].size() == 0 || words.size()==0) return find;
+        
+        for (auto word : words) Insert(word);
+        
+        int m=board.size(), n=board[0].size();
+        set<string> sset;
+ 
+        string      s;
+        for (int i=0; i<m; ++i) {
+            for (int j=0; j<n; ++j) {
+               dfs(board,m,n,sset,s,i,j);
+            }
+        }
+
+        for (auto s : sset) find.push_back(s);
+        return find;
+    }
+    
+private:
+    TrieNode root;
+};
