@@ -1,0 +1,60 @@
+// 123. Best Time to Buy and Sell Stock III
+//Say you have an array for which the ith element is the price of a given stock on day i.
+// Design an algorithm to find the maximum profit. You may complete at most two transactions.
+
+// Note:
+// You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+
+// very tricky but brilliant solution, copied from discussion
+// if engage in one transaction,b1 the lowest
+// s1 = max(sell-buy) = max(prices[i]-min(prices[0 to i-1])
+// if engage in two transactions
+// s2 = first max - buy again + sell again
+// = max(max(s1) - min(prices[j+1 to i-1]) + prices[i]
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+       int n = prices.size();
+       if (n==0) return 0;
+  
+       int b1=prices[0],s1=0,b2=prices[0],s2=0,mProfit=0;
+       for (int i=1; i<n; ++i) {
+           int last = s1;
+
+           s1 = max(s1,prices[i]-b1);
+           b1 = min(b1,prices[i]);
+           s2 = max(s2,prices[i]-b2);
+           b2 = min(b2, prices[i]-last);
+           mProfit = max(s1,s2);
+       }
+       return mProfit;
+    }
+};
+
+
+// easy to understand code, but with o(n) extra spaces
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+       int n = prices.size();
+       if (n==0) return 0;
+       
+       vector<int> pre(n,0); //pre[i]-max profit from 0-i
+       vector<int> post(n,0); //post[i] - max profit from i-(n-1)
+       int cur = prices[0]; // current lowest price
+       for (int i=1; i<n; ++i) {
+           cur = min(cur,prices[i]);
+           pre[i] = max(pre[i-1],prices[i]-cur);
+       }
+       cur = prices[n-1]; //current highest price
+       for (int i=n-2; i>=0; --i) {
+           cur = max(cur,prices[i]);
+           post[i] = max(post[i+1],cur-prices[i]);
+       }
+       cur = 0;
+       for (int i=0; i<n; ++i) {
+           cur = max(cur,pre[i]+post[i]);
+       }
+       return cur;
+    }
+  };
