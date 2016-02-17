@@ -19,29 +19,34 @@ nums2 = [8, 9]
 k = 3
 return [9, 8, 9]
 
+
+// copied from discussion
 class Solution {
 public:
     vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) {
         int l1=nums1.size(), l2=nums2.size();
         vector<int> ret(k,0);
         
-        for (int i=max(0,k-l2);i<= min(l1,k);++i) {
-            vector<int> r1=findMax(nums1,i);
-            vector<int> r2=findMax(nums2,k-i);
+        for (int i=max(0,k-l2);i<=min(l1,k);++i) {
+            vector<int> r1=findMax(nums1,i,l1);
+            vector<int> r2=findMax(nums2,k-i,l2);
             vector<int> m=merge(r1,r2);
-            if (compare(m,0,ret,0)) ret = m;
+            if (compare(m,0,k,ret,0,k)) ret = m;
         }
         return ret;
     }
     
-    vector<int> findMax(vector<int>& nums,int l) {
+    vector<int> findMax(vector<int>& nums,int l,int n) {
         vector<int> ret;
         if (l==0) return ret;
         
         ret=vector<int>(l,0);
-        int n=nums.size();
-        for (int i=0,j=0;i<n;++i) {
-            while(j>0 && n-i+j>l && nums[i]>ret[j-1]) --j;
+        for (int i=0,j=0;i<n;++i) { 
+            // n-i - # of left digits
+            // j is the current last digit position
+            // n-i+j>l means the rest of the digits is more than filling
+            // the positions after jth
+            while(j>0&&n-i+j>l&&nums[i]>ret[j-1]) --j;
             if (j<l) ret[j++]=nums[i];
         }
         return ret;
@@ -51,20 +56,18 @@ public:
         int l1=n1.size(), l2=n2.size();
         if (l1==0) return n2;
         if (l2==0) return n1;
-        
         vector<int> ret(l1+l2,0);
         int i=0,j=0,k=0;
         while (i<l1 || j<l2) {
-            ret[k++] = compare(n1,i,n2,j) ? n1[i++] : n2[j++];
+            ret[k++] = compare(n1,i,l1,n2,j,l2) ? n1[i++] : n2[j++];
         }
         return ret;
     }
     
-    bool compare(vector<int>& n1,int i,vector<int>& n2,int j) {
-        while(i<n1.size() && j<n2.size() && n1[i]==n2[j]) {
+    bool compare(vector<int>& n1,int i,int l1,vector<int>& n2,int j,int l2) {
+        while(i<l1 && j<l2 && n1[i]==n2[j]) {
             ++i; ++j;
         }
-        return j==n2.size() || (i<n1.size() && n1[i]>n2[j]);
+        return j==l2 || (i<l1 && n1[i]>n2[j]);
     }
 };
-
