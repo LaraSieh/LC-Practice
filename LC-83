@@ -1,0 +1,37 @@
+83. Remove Duplicates from Sorted List
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+
+For example,
+Given 1->1->2, return 1->2.
+Given 1->1->2->3->3, return 1->2->3.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (head==NULL or head->next==NULL) return head;
+        ListNode *prev=head;
+        ListNode *node=head->next;
+        
+        while(node) {
+            if (node->val == prev->val) {
+                ListNode *save = node;
+                prev->next = node->next;
+                node = node->next;
+                delete save;
+            } else {
+                prev = node;
+                node = node->next;
+            }
+        }
+        
+        return head;
+    }
+};
