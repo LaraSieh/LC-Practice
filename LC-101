@@ -1,0 +1,81 @@
+101. Symmetric Tree
+ Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree is symmetric: 
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+
+
+
+But the following is not:
+
+    1
+   / \
+  2   2
+   \   \
+   3    3
+
+
+
+Note:
+ Bonus points if you could solve it both recursively and iteratively. 
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ 
+ // recursive
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (root==NULL) return true;
+        
+        return IsSubtreeSymmetric(root->left,root->right);
+    }
+    
+    bool IsSubtreeSymmetric(TreeNode *left, TreeNode *right) {
+        if (left==NULL && right==NULL) return true;
+        if (left==NULL || right==NULL) return false;
+        if (left->val != right->val) return false;
+        
+        if (!IsSubtreeSymmetric(left->left, right->right)) return false;
+        if (!IsSubtreeSymmetric(left->right, right->left)) return false;
+        
+        return true;
+    }
+};
+
+// iterative, but just the stack implementation of recursive version
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (root==NULL) return true;
+        queue<pair<TreeNode *,TreeNode*>>  q;
+        q.push(make_pair(root->left,root->right));
+        
+        while (!q.empty()) {
+            auto check=q.front();
+            q.pop();
+            
+            TreeNode *l=check.first;
+            TreeNode *r=check.second;
+            if (l==NULL && r==NULL) continue;
+            if (l==NULL || r==NULL) return false;
+            if (l->val != r->val) return false;
+            
+            q.push(make_pair(l->left,r->right));
+            q.push(make_pair(l->right,r->left));
+        }
+        return true;
+    }
+};
