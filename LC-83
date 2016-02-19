@@ -5,6 +5,7 @@ For example,
 Given 1->1->2, return 1->2.
 Given 1->1->2->3->3, return 1->2->3.
 
+// using prev, curr, 16ms
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -32,6 +33,30 @@ public:
             }
         }
         
+        return head;
+    }
+};
+
+
+// can clean up further, 12ms
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (head==NULL) return NULL;
+
+        ListNode *node = head;
+        while(node->next)
+        {
+            if (node->val == node->next->val)
+            {
+                ListNode *n = node->next;
+                node->next = node->next->next;
+                delete n;
+            }
+            else
+                node = node->next;
+        }
+
         return head;
     }
 };
