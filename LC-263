@@ -5,14 +5,14 @@
 // 6, 8 are ugly while 14 is not ugly since it includes another prime factor 7. 
 // Note that 1 is typically treated as an ugly number. 
 
-// first write
+// first write, 4ms
 class Solution {
 public:
     bool isUgly(int num) {
-        if (num == 0) return false;
+        if (num<= 0) return false;
         
         while ((num&0x1) == 0) num = num >> 1;
-        if (num == 1) return true;  // this can improve time performance by half
+        if (num == 1) return true;  // this can improve time performance by half. //second time run, it doesn't matter
         
         while (num%3 == 0) num = num/3;
         if (num == 1) return true;
@@ -23,7 +23,7 @@ public:
     }
 };
 
-// shorter code
+// shorter code, slower 8ms
 class Solution {
 public:
     bool isUgly(int num) {
