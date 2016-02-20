@@ -94,3 +94,34 @@ public:
         return levels;
     }
 };
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> levels;
+        vector<int>  line;
+        queue<TreeNode *> q;
+        
+        if (root==NULL) return levels;
+        q.push(root); q.push(NULL);
+        while (!q.empty())
+        {
+            TreeNode *n=q.front();
+            q.pop();
+            
+            if (n==NULL) {
+                levels.push_back(line);
+                if (!q.empty()) {
+                    line.clear();
+                    q.push_back(NULL);
+                }
+            } else {
+                line.push_back(n->val);
+                if (n->left) q.push(n->left);
+                if (n->right) q.push(n->right);
+            }
+        }
+        
+        return levels;
+    }
+};
