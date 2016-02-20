@@ -41,3 +41,18 @@ public:
         return len;
     }
 };
+
+// my 4ms solution
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int n=nums.size(), write=0;
+        
+        while (write<n && nums[write] != val) ++write;
+        for (int i=write; i<n; ++i) {
+            if (nums[i]!=val)
+                nums[write++] = nums[i];
+        }
+        return write;
+    }
+};
