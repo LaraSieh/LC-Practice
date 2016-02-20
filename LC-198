@@ -1,0 +1,63 @@
+198. House Robber
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you 
+can rob tonight without alerting the police.
+
+
+// dp with extra array, 0ms
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if (n==0) return 0;
+        if (n<2) return nums[n-1];
+        
+        vector<int> rob(n+1,0);
+        rob[0]=0; rob[1]=nums[0], rob[2]=nums[1];
+        int most = max(rob[1],rob[2]);
+        
+        for (int i=3; i<=n; ++i) {
+            rob[i] = max(rob[i-3],rob[i-2]) + nums[i-1];
+            most = max(most, rob[i]);
+        }
+        return most;
+    }
+};
+
+// just use o(1) space, 0ms
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if (n==0) return 0;
+        
+        int first=0, second=0, third=nums[0];
+        int most = nums[0];
+        
+        for (int i=2; i<=n; ++i) {
+            int local = max(first,second) + nums[i-1];
+            most = max(most, local);
+            first = second;
+            second = third;
+            third = local;
+        }
+        return most;
+    }
+};
+
+// clean code
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int first=0, second=0, third=0,most=0;
+        
+        for (int i=0; i<nums.size(); ++i) {
+            int local = max(first,second) + nums[i];
+            most = max(most, local);
+            first = second;
+            second = third;
+            third = local;
+        }
+        return most;
+    }
+};
