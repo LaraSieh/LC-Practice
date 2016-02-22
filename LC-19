@@ -1,0 +1,101 @@
+19. Remove Nth Node From End of List
+Given a linked list, remove the nth node from the end of list and return its head.
+
+For example,
+
+   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+Note:
+Given n will always be valid.
+Try to do this in one pass.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ 
+ // there's a flaw in this implementation though it passed the test
+ // when n=0, this will fail
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *n1 = head;
+        ListNode *n2 = head;
+        
+        while(n>0)
+        {
+            n2 = n2->next;
+            --n;
+        }
+        
+        ListNode *prev = NULL;
+        while (n2)
+        {
+            prev = n1;
+            n2 = n2->next;
+            n1 = n1->next;
+        }
+        
+        if (prev)
+        {
+            prev->next = n1->next;
+            delete n1;
+        }
+        else
+        {
+            // delete head
+            prev = head;
+            head = head->next;
+            delete prev;
+        }
+        
+        return head;
+    }
+};
+
+
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode *first=&dummy, *second=&dummy;
+             
+        if (n==0) {  // looks like the test doesn't have n=0 case
+            if (head=NULL) return NULL;
+            first = first->next;
+            while (first->next) {
+                first = first->next;
+                second = second->next;
+            }
+            second->next = NULL;
+            delete first;
+            return dummy.next;
+        }
+        
+        int ahead=0;
+        while (ahead<n && first) {
+            first = first->next;
+            ++ahead;
+        }
+ //       if (ahead<n) return head;  //should handle n is more than list length, however no test run over it
+        
+        while (first->next) {//second->next is the one to delete,we need prev pointer
+            second = second->next;
+            first = first->next;
+        }
+        
+        if (second->next) {
+            ListNode *save = second->next;
+            second->next = save->next;
+            delete save;
+        }
+        return dummy.next;
+    }
+};
