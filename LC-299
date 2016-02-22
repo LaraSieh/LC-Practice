@@ -73,3 +73,23 @@ public:
         return res;
     }
 }
+
+// clean up more
+class Solution {
+public:
+    string getHint(string secret, string guess) {
+        vector<int> counts(10,0); // count for digit 0-9
+        int bulls=0, cows=0;
+        for (size_t i=0; i<secret.size();++i) {
+            int s=secret[i]-'0', g=guess[i]-'0';
+            if (s==g) ++bulls;
+            else {
+                if (counts[s]<0) ++cows;
+                if (counts[g]>0) ++cows;
+                ++counts[s];
+                --counts[g];
+            }
+        }
+        return (to_string(bulls) + 'A' + to_string(cows) + 'B');
+    }
+};
