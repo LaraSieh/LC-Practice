@@ -1,0 +1,63 @@
+205. Isomorphic Strings
+Given two strings s and t, determine if they are isomorphic.
+
+Two strings are isomorphic if the characters in s can be replaced to get t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character but a character may map to itself.
+
+For example,
+Given "egg", "add", return true.
+
+Given "foo", "bar", return false.
+
+Given "paper", "title", return true.
+
+Note:
+You may assume both s and t have the same length.
+
+// using map, 28ms
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        unordered_map<char,char> m1,m2;
+        int len = s.size();
+        
+        if (len != t.size()) return false;
+        while (len--) {
+            char c1=s[len], c2=t[len];
+            if (m1.find(c1) == m1.end() && m2.find(c2) == m2.end()) {
+                m1[c1] = c2;
+                m2[c2] = c1;
+            } else if (m1.find(c1) != m1.end() && m1[c1] != c2) {
+                return false;
+            } else if (m2.find(c2) != m2.end() && m2[c2] != c1) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+
+// If just ascii, this is much faster, 8ms
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        int len = s.length();
+  
+        vector<char> vs(256, '\0');
+        vector<char> vt(256, '\0');
+        
+        for (int i=0; i < len; ++i)
+        {
+            char sc=s[i], tc=t[i];
+            if (vs[sc] == '\0' && vt[tc] == '\0')
+            {
+                vs[sc] = tc;
+                vt[tc] = sc;
+            } else if (vs[sc] != tc || vt[tc] != sc)
+                return false;
+        }
+        return true;
+    }
+};
