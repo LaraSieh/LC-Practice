@@ -1,0 +1,67 @@
+219. Contains Duplicate II
+Given an array of integers and an integer k, find out whether there are two distinct indices i and j in the 
+array such that nums[i] = nums[j] and the difference between i and j is at most k.
+
+// TLE solution
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        int n = nums.size();
+        
+        for (int i=0; i<n; ++i) {
+            for (int j=1; j<min(k+1,n-i); ++j) {
+                if (nums[i] == nums[i+j]) return true; 
+            }
+        }
+        return false;
+    }
+};
+
+// 32ms
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        unordered_map<int,int> m;
+        int n=nums.size();
+        //map<int,int> m;  // using ordered took 72ms!
+        
+        for (int i=0; i<n; ++i) {
+            int num=nums[i];
+            if (m.find(num) != m.end()) {
+                if ((m[num]+k) >= i ) return true;
+            }
+            m[num] = i;
+        }
+        return false;
+    }
+};
+
+//using set, 28ms
+class Solution {
+public:
+
+    // use set  32 ms
+    bool containsNearbyDuplicate(vector<int>& nums, int k)
+    {
+        if (k==0 || nums.size() == 0) return false;
+        
+        unordered_set<int> s;
+        int i;
+        for (i=0; i<min((int)nums.size(), k+1); ++i)
+        {
+            if (s.find(nums[i]) != s.end())
+                return true;
+            s.insert(nums[i]);
+        }
+        
+        while (i<nums.size())
+        {
+            s.erase(nums[i-k-1]);
+            if (s.find(nums[i]) != s.end())
+                return true;
+            s.insert(nums[i++]);
+        }
+        
+        return false;
+    }
+  };
