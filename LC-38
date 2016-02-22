@@ -1,0 +1,84 @@
+38. Count and Say
+ The count-and-say sequence is the sequence of integers beginning as follows:
+1, 11, 21, 1211, 111221, ... 
+
+1 is read off as "one 1" or 11.
+11 is read off as "two 1s" or 21.
+21 is read off as "one 2, then one 1" or 1211.
+
+
+Given an integer n, generate the nth sequence. 
+
+Note: The sequence of integers will be represented as a string. 
+
+// recursive, 4ms
+class Solution {
+public:
+    string countAndSay(int n) {
+        string say("1");
+        
+        for (int i=1; i<n; ++i) {
+            say = SayCount(say); 
+        }
+        return say;
+    }
+    
+    string SayCount(string s) {
+        int count=1, n=s.size();
+        string say;
+        for (int i=1; i<=n; ++i) {//s[n] is '\0',use it to count the last digit
+            if (s[i] != s[i-1]) { 
+                say += to_string(count) + s[i-1];
+                count = 1;
+            } else {
+                ++count;
+            }
+        }
+        return say;
+    }
+};
+
+//iterative, 4ms
+class Solution {
+public:
+    string countAndSay(int n) {
+        string say("1");
+        
+        for (int i=1; i<n; ++i) {
+            string copy = say;
+            int    count = 1;
+            say.clear();
+            for (int j=1; j<=copy.size(); ++j) {//copy[n] is '\0',use it to count the last digit
+                if (copy[j] != copy[j-1]) {
+                    say += to_string(count)+copy[j-1];
+                    count = 1;
+                } else 
+                    ++count;
+            }
+        }
+        return say;
+    }
+};
+
+// 0ms
+class Solution {
+public:
+    string countAndSay(int n) {
+        string say("1");
+        
+        for (int i=1; i<n; ++i) {
+            string copy = say;
+            int    count = 1;
+            say.clear();
+            for (int j=1; j<=copy.size(); ++j) {//copy[n] is '\0',use it to count the last digit
+                if (copy[j] != copy[j-1]) {
+                    say.push_back('0'+count);  // <== this change drops from 4ms to 0ms
+                    say += copy[j-1];
+                    count = 1;
+                } else 
+                    ++count;
+            }
+        }
+        return say;
+    }
+};
