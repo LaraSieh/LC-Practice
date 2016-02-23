@@ -1,0 +1,47 @@
+28. Implement strStr()
+ Implement strStr(). 
+
+Returns the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack. 
+
+
+// subroutine method
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int lh = haystack.size(), ln = needle.size();
+        if (ln==0 ) return 0; 
+        if (ln>lh) return -1;
+         
+        for (int i=0; i<=lh-ln;++i) {
+            if (haystack[i] == needle[0]) {
+                if (MatchString(haystack,i,needle)) return i;        
+            }
+        }
+        return -1;
+    }
+    
+    bool MatchString(string& h, int index, string& n) {
+        
+        for (int i=0; i<n.size()-1; ++i) {
+            if (h[index+i+1] != n[i+1]) return false;
+        }
+        return true;
+    }
+};
+
+// direct loop
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int lh = haystack.size(), ln = needle.size();
+        if (ln==0 ) return 0; 
+        if (ln>lh) return -1;
+         
+        for (int i=0; i<=lh-ln;++i) {
+            int j=0;
+            while (j<ln && haystack[i+j]==needle[j]) ++j;
+            if (j==ln) return i;
+        }
+        return -1;
+    }
+};
