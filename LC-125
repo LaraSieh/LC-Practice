@@ -1,0 +1,49 @@
+125. Valid Palindrome
+Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+
+For example,
+"A man, a plan, a canal: Panama" is a palindrome.
+"race a car" is not a palindrome.
+
+Note:
+Have you consider that the string might be empty? This is a good question to ask during an interview.
+
+For the purpose of this problem, we define empty string as valid palindrome.
+
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int head = 0, tail = s.size()-1;
+        
+        while (head < tail) {
+            if (!isalnum(s[head])) ++head;
+            else if (!isalnum(s[tail])) --tail;
+            else if (toupper(s[head++]) != toupper(s[tail--])) return false;
+        }
+        
+        return true;
+    }
+};
+
+
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        string cano;
+        int len = 0;
+        for (char c : s) {
+            if (isalnum(c)) {
+                cano += toupper(c);
+                ++len;
+            }
+        }
+        
+        int i=0;
+        --len;
+        while (i<len && cano[i]==cano[len]) {
+            ++i; --len;
+        }
+        
+        return (i>=len);
+      }
+    };
