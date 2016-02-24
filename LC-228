@@ -1,0 +1,29 @@
+228. Summary Ranges
+Given a sorted integer array without duplicates, return the summary of its ranges.
+
+For example, given [0,1,2,4,5,7], return ["0->2","4->5","7"].
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> ranges;
+        int n = nums.size();
+        if (n==0) return ranges;
+      
+        int start = nums[0];
+        for (int i=1; i<n; ++i) {
+            if (nums[i] > nums[i-1]+1) {
+                ranges.push_back(string(to_string(start)));
+                if (nums[i-1] != start) {
+                    ranges.back() += string("->"+to_string(nums[i-1]));
+                }
+                start = nums[i];
+            }
+        }
+        ranges.push_back(string(to_string(start)));
+        if (nums[n-1] != start) {
+            ranges.back() += string("->"+to_string(nums[n-1]));
+        }
+        
+        return ranges;
+    }
+};
