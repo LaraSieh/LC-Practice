@@ -1,0 +1,82 @@
+294.  Flip Game II
+
+
+
+
+https://leetcode.com/discuss/64344/theory-matters-from-backtracking-128ms-to-dp-0ms
+
+// from discussion,  At first glance, backtracking seems to be the only feasible solution to this problem. 
+    We can basically try every possible move for the first player (Let's call him 1P from now on), 
+    and recursively check if the second player 2P has any chance to win. If 2P is guaranteed to lose, 
+    then we know the current move 1P takes must be the winning move. The implementation is actually very simple:
+
+The complexity is
+Now let's check the time complexity: Suppose originally the board of size N contains only '+' signs, then roughly we have:
+
+T(N) = T(N-2) + T(N-3) + [T(2) + T(N-4)] + [T(3) + T(N-5)] + ... 
+        [T(N-5) + T(3)] + [T(N-4) + T(2)] + T(N-3) + T(N-2)
+     = 2 * sum(T[i])  (i = 3..N-2)
+You will find that T(N) = 2^(N-1) satisfies the above equation. Therefore, this algorithm is at least exponential.
+
+int len;
+string ss;
+bool canWin(string s) {
+    len = s.size();
+    ss = s;
+    return canWin();
+}
+
+
+
+// O(n) time O(1) space 
+bool canWin(string s) {
+    // Get the primary part of g[n], time complexity O(1)
+    int NOPERIOD_LAST = 87;
+    int PERIOD = 34;
+    vector<int> g(NOPERIOD_LAST, 0);
+    vector<bool> fmv(NOPERIOD_LAST, true);
+    for (int idx = 2; idx < NOPERIOD_LAST; ++idx) {
+        fill_n(fmv.begin(), idx, true);
+        for (int first = 0, last = idx - 2; first <= last; ++first, --last) {
+            fmv[g[first] ^ g[last]] = false;
+        }
+        g[idx] = find(fmv.begin(), fmv.end(), true) - fmv.begin();
+    }
+
+    // Get g[length of '+...+'] and xor them together: O(n)
+    int result = 0;
+    for (string::iterator first = s.begin(); first != s.end(); ++first) {
+        if (*first == '+') {
+            // linear search to find the length of successive '+', time O(last-first)
+            string::iterator last = find(first, s.end(), '-'); 
+            size_t dist = last - first;
+
+            // calculate g[dist]. Note that the time of for-loop is O(last-first)
+            for (; dist >= NOPERIOD_LAST; dist -= PERIOD);
+            result ^= g[dist];
+
+            // update first, skip (last-first) entries
+            if (last == s.end()) {
+                break;
+            }
+            else {
+                first = last;
+            }           
+        }
+    }
+    return static_cast<bool>(result);
+}
+bool canWin() {
+    for (int is = 0; is <= len-2; ++is) {
+        if (ss[is] == '+' && ss[is+1] == '+') {
+            ss[is] = '-'; ss[is+1] = '-';
+            bool wins = !canWin(); 
+            ss[is] = '+'; ss[is+1] = '+';
+            if (wins) return true;
+        }
+    }
+    return false;
+} 
+
+
+
