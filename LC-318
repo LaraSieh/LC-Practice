@@ -30,12 +30,13 @@ public:
     }
 };
 
+// 128ms 
 class Solution {
 public:
     int maxProduct(vector<string>& words) {
         int n=words.size(), mult = 0;
         vector<unsigned int> bits(n,0);  // each bit represents the existence of char in each string
-        vector<int> lengths(n,0);
+        vector<int> lengths(n,0);    // if we don't save length for each words, but use words[i].size() every where, it will be 180ms in total
         
         for (int i=0; i<n; ++i) {
             lengths[i] = words[i].size();
