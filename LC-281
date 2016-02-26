@@ -39,3 +39,50 @@ class ZigzagIterator {
          return it1 != mv1.end() || it2 != mv2.end();
      }
  };
+
+
+// for k 
+class ZigzagIterator {
+private:
+    vector<vector<int>> bases;
+    vector<int> curPosition;
+public:
+
+// NOT tested!!  need modify constructor to make it work
+    ZigzagIterator(vector<int>& v1, vector<int>& v2) {
+        bases.push_back(v1);
+        bases.push_back(v2);
+        curPosition.push_back(0);
+        curPosition.push_back(0);
+    }
+
+    int next() {
+        int maxIndex = 0;
+        for(int index = 0; index < curPosition.size(); index++){
+            if(curPosition[index] >= curPosition[maxIndex])
+                maxIndex = index;
+        }
+
+        if(++maxIndex == curPosition.size())
+            maxIndex = 0;
+
+        for(; maxIndex < curPosition.size(); maxIndex++){
+            if(curPosition[maxIndex] < bases[maxIndex].size())
+                break;
+        }
+
+         if(maxIndex == curPosition.size())
+            maxIndex = 0;
+
+        curPosition[maxIndex]++;
+        return bases[maxIndex][curPosition[maxIndex] - 1];
+    }
+
+    bool hasNext() {
+        for(int index = 0; index < curPosition.size(); index++){
+            if(curPosition[index] < bases[index].size())
+                return true;
+        }
+        return false;
+    }
+};
