@@ -1,0 +1,25 @@
+320. Generalized Abbreviation 
+
+
+
+
+vector<string> generateAbbreviations(string word) {
+    if (word.empty()) {
+        return {word};
+    }
+    vector<string> result;
+    generateHelper(word, result, 0, "");
+    return result;
+}
+
+void generateHelper(string &word, vector<string> &result, int index, string level) {
+    if (index >= word.length()) {
+        result.push_back(level);
+        return;
+    }
+    generateHelper(word, result, index + 1, level + word[index]);
+    for (int i = index; i < word.length(); i++) {
+        int len = i - index + 1;
+        generateHelper(word, result, i + 2, i == word.length() - 1 ? level + to_string(len) : level + to_string(len) + word[i + 1]);
+    }
+}
