@@ -1,0 +1,81 @@
+230. Kth Smallest Element in a BST
+Given a binary search tree, write a function kthSmallest to find the kth smallest element in it.
+
+Note: 
+ You may assume k is always valid, 1 ≤ k ≤ BST's total elements.
+
+Follow up:
+ What if the BST is modified (insert/delete operations) often and you need to find the kth smallest frequently? 
+  How would you optimize the kthSmallest routine?
+  
+  
+  // Using priority queue, straightforward but takes 36ms
+  /**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        priority_queue<int> pq;
+        
+        traversal(root, pq, k);
+        return pq.top();
+    }
+    
+    void traversal(TreeNode *node, priority_queue<int>& pq, int k) {
+//        if (node==nullptr) return;
+        pq.push(node->val);
+        if (pq.size() > k) {
+            pq.pop();
+        }
+        if (node->left) traversal(node->left,pq,k);
+        if (node->right) traversal(node->right,pq,k);
+    }
+};
+
+
+// 24ms
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        priority_queue<int> pq;
+        
+        traversal(root, pq, k);
+        return pq.top();
+    }
+    
+    void traversal(TreeNode *node, priority_queue<int>& pq, int k) {
+        if (node->left) traversal(node->left,pq,k);
+        if (pq.size() == k) return;
+        pq.push(node->val);
+        if (pq.size() == k) return;
+        if (node->right) traversal(node->right,pq,k);
+    }
+};
+
+
+// 20ms
+class Solution {
+public:
+    int count=0,target=0;
+    int kthSmallest(TreeNode* root, int k) {
+        traversal(root,k);
+        return target;
+    }
+    
+    void traversal(TreeNode *node, int k) {
+        if (node->left) traversal(node->left,k);
+        ++count;
+        if (count == k) {
+            target=node->val;
+            return;
+        }
+        if (node->right) traversal(node->right,k);
+    }
+};
