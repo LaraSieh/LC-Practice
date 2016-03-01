@@ -13,6 +13,7 @@ return true.
 Given [5, 4, 3, 2, 1],
 return false.
 
+// My 8ms solution
 class Solution {
 public:
     bool increasingTriplet(vector<int>& nums) {
@@ -41,3 +42,15 @@ public:
         return false;
     }
 };
+
+// clean one copied from discussion
+if(nums.size()<3) return false;
+    vector<int>inc;
+    for(int i=0;i<nums.size();i++)
+    {
+        if(inc.size()>=3) return true;//important
+        int ind=lower_bound(inc.begin(),inc.end(),nums[i])-inc.begin();
+        if(ind==inc.size())inc.push_back(nums[i]);
+        else inc[ind]=nums[i];
+    }
+    return inc.size()>=3;
