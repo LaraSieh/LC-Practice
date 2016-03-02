@@ -1,0 +1,52 @@
+39. Combination Sum
+Given a set of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+The same repeated number may be chosen from C unlimited number of times.
+
+Note:
+All numbers (including target) will be positive integers.
+Elements in a combination (a1, a2, … , ak) must be in non-descending order. (ie, a1 ≤ a2 ≤ … ≤ ak).
+The solution set must not contain duplicate combinations.
+For example, given candidate set 2,3,6,7 and target 7, 
+A solution set is: 
+[7] 
+[2, 2, 3] 
+
+class Solution {
+public:
+    vector<vector<int>>  res;
+    vector<int>          line;
+           
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+
+        FindSum(candidates, 0, target);
+        return res;
+    }
+    
+    void FindSum(const vector<int>& candidates, int start, int sum)
+    {
+        if (sum < 0 || start > candidates.size())
+            return;
+        
+        if (sum == 0) {
+            res.push_back(line);
+            return;
+        }
+        
+        for (size_t i=start; i <  candidates.size(); ++i)
+        {
+            if (candidates[i] > sum)
+                //already sorted so this path doesn't work
+                return;
+        
+            if (i > start && candidates[i] == candidates[i-1])
+                continue;
+    
+            line.push_back(candidates[i]);
+            FindSum(candidates, i, sum - candidates[i]);
+            line.pop_back();
+        }
+    }
+};
+
