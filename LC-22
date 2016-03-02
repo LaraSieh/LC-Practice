@@ -1,0 +1,29 @@
+22. Generate Parentheses
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+"((()))", "(()())", "(())()", "()(())", "()()()"
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> output;
+        string line;
+        
+        generateParenthesisSub(n,n,line,output);
+        return output;
+    }
+    
+    void generateParenthesisSub(int l,int r, string s, vector<string>& o) {
+        if (l==0 && r==0) {
+            o.push_back(s);
+            s.clear();
+            return;
+        }
+        
+        if (l>r) return;
+        if (l>0) generateParenthesisSub(l-1,r,s+'(',o);
+        if (r>0) generateParenthesisSub(l,r-1,s+')',o);
+    }
+};
