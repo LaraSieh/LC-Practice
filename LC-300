@@ -33,6 +33,24 @@ public:
     }
 };
 
+// nlong(n) 
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        if (nums.empty()) return 0;
+        int n=nums.size();
+        vector<int> local(n+1,0);
+        
+        auto it=local.begin();
+        for (int i=0; i<n; ++i) {
+            auto iter = lower_bound(local.begin(),it,nums[i]);
+            *iter = nums[i];
+            if (it == iter)
+                ++it;
+        }
+        return it - local.begin();
+    }
+};
 
 //  Onlog(n),  algorith explained here http://www.algorithmist.com/index.php/Longest_Increasing_Subsequence
 class Solution {
