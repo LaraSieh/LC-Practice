@@ -10,6 +10,56 @@ Note:
  (3) 0 < k ≤ 100, 0 < n ≤ 106, 0 < primes[i] < 1000. 
 
 
+// 120 ms
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        int k=primes.size();
+        vector<int> ugly(1,1);
+        vector<int> index(k,0);
+        
+        while (ugly.size() < n) {
+            int next=INT_MAX;
+            for (int i=0;i<k;++i) {
+                next = min(next, primes[i]*ugly[index[i]]);
+            }
+            ugly.push_back(next);
+            for (int i=0;i<k;++i) {
+                if (next == primes[i]*ugly[index[i]]) 
+                    ++index[i];
+            }
+        }
+        return ugly.back();
+    }
+};
+
+//76 ms
+class Solution {
+public:
+    int nthSuperUglyNumber(int n, vector<int>& primes) {
+        int k=primes.size();
+        vector<int> ugly(1,1);
+        vector<int> index(k,0);
+        vector<int> vals(primes);
+        
+        while (ugly.size() < n) {
+            int next=INT_MAX;
+            for (int i=0;i<k;++i) {
+                next = min(next,vals[i]);
+            }
+            ugly.push_back(next);
+            for (int i=0;i<k;++i) {
+                if (next == vals[i]) { 
+                    ++index[i];
+                    vals[i] = ugly[index[i]]*primes[i];
+                }
+            }
+        }
+        return ugly.back();
+    }
+};
+
+// version copied from discussion
 
 class Solution {
 public:
