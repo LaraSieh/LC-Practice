@@ -1,0 +1,30 @@
+275. H-Index II
+Follow up for H-Index: What if the citations array is sorted in ascending order? Could you optimize your algorithm?
+
+
+// 20ms
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int left = 0, right = citations.size(), mid;
+        while( left < right ) {
+            mid = (left+right)/2;
+            if( citations[mid] < citations.size() - mid ) left = mid+1;
+            else right = mid;
+        }
+        return citations.size() - right;
+    }
+};
+
+//1020ms
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n=citations.size();
+        
+        for (int i=0; i<n; ++i) {
+            if (citations[i]>=n-i) return n-i;
+        }
+        return 0;
+    }
+};
