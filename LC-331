@@ -32,6 +32,36 @@ Return false
 Theorem 5.1 Full Binary Tree Theorem: The number of leaves in a non-empty full binary tree is 
 one more than the number of internal nodes
 
+// 4ms solution
+class Solution {
+public:
+
+// Theorem 5.1 Full Binary Tree Theorem: The number of leaves in a non-empty
+// full binary tree is one more than the number of internal nodes
+// So
+// 1. if null count < node count+1, the tree is incomplete.
+// 2. if null count > node count +1, the tree is invalid.
+// 3. if null count == node count+1, the tree is complete and can't be extended.
+
+    bool isValidSerialization(string preorder) {
+        int n=preorder.size(), nodeCount=0, nullCount=0;
+        
+        for (int i=0; i<n; ++i) {
+            if (preorder[i]=='#') { 
+                ++nullCount;
+                if (i!=(n-1)) ++i; // skip the next ','
+            } else if (preorder[i]==','){
+                ++nodeCount;  
+            }//skip all the numbers
+            
+            if ((nullCount>=nodeCount+1) && (i!=n-1)) 
+                return false;
+        }
+        
+        return nullCount==nodeCount+1;
+    }
+};
+
 
 class Solution {
 public:
