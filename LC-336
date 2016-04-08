@@ -1,0 +1,98 @@
+336. Palindrome Pairs
+Given a list of unique words. Find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+
+Example 1:
+Given words = ["bat", "tab", "cat"]
+Return [[0, 1], [1, 0]]
+The palindromes are ["battab", "tabbat"]
+Example 2:
+Given words = ["abcd", "dcba", "lls", "s", "sssll"]
+Return [[0, 1], [1, 0], [3, 2], [2, 4]]
+The palindromes are ["dcbaabcd", "abcddcba", "slls", "llssssll"]
+
+
+// O(n*k^2) 648ms
+
+class Solution {
+public:
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        vector<vector<int>> output;
+        int num=words.size();
+        
+        map<string,int> m; 
+        for (int i=0; i<words.size();++i) {
+            string key = words[i];
+            reverse(key.begin(), key.end());
+            m[key]=i;
+        }
+        
+        if (m.find("") != m.end()) {
+            for (int i=0; i<words.size();++i) {
+                if (i!=m[""] && IsPalindrome(words[i])) {
+                    output.push_back({m[""],i});
+                    output.push_back({i,m[""]});
+                }
+            }
+            m.erase("");
+        }
+
+        
+        for (int i=0; i<words.size(); ++i) {
+            int len=words[i].size();
+            
+            for (int j=0; j<len; ++j) {
+                string left=words[i].substr(0,j);
+                string right=words[i].substr(j);
+                if (IsPalindrome(left) && (m.find(right)!=m.end()) && (i!=m[right])) {
+                    output.push_back({m[right],i});
+                }
+                if (IsPalindrome(right) && (m.find(left)!=m.end()) && (i!=m[left])) {
+                    output.push_back({i,m[left]});
+                }
+            }
+        }
+        
+        return output;
+    }
+    
+    bool IsPalindrome(string s) {
+        for(int i=0, j=s.size()-1; i<j; ++i,--j) {
+            if (s[i] != s[j]) return false;
+        }
+        
+        return true;
+    }
+};
+
+
+//TLE method
+class Solution {
+public:
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        vector<vector<int>> output;
+        int num=words.size();
+        
+        for (int i=0; i<num; ++i) {
+            for (int j=0; j<num; ++j) {
+                if (i!=j) {
+                    string s = words[i]+words[j];
+                    if (IsPalindrome(s)) {
+                        output.push_back(vector<int>{i,j});                
+                    }
+                }
+            }
+        }
+        
+        return output;
+    }
+    
+    bool IsPalindrome(string s) {
+        int i=0, j=s.size()-1;
+        while (i<j) {
+            if (s[i] != s[j]) return false;
+            ++i; --j;
+        }
+        
+        return true;
+    }
+};
