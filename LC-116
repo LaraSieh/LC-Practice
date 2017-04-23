@@ -70,3 +70,24 @@ public:
     }
 };
 
+
+// O(constant) space,  39ms 
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        if (root == nullptr) return;
+        
+        // note it is a perfect binary tree so we can do this
+        TreeLinkNode *node= root->left;
+        while (root && root->left) {
+            TreeLinkNode *cur = root;
+            while (cur) {
+                cur->left->next = cur->right;
+                if (cur->next)
+                    cur->right->next = cur->next->left;
+                cur = cur->next;
+            }
+            root = root->left;
+        }
+    }
+};
