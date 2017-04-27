@@ -15,6 +15,7 @@ public:
         
         possible[0] = true;
         for (int i=0; i<len; ++i) {
+           // can j start at i-1? 
             for (int j=i; j>=0; --j) {
                 if (possible[j] && wordDict.count(s.substr(j,i-j+1)) != 0) {
                     possible[i+1] = true; 
