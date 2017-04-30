@@ -18,9 +18,10 @@ public:
         if (n==0) return 0;
         
         while (write<n-1 && nums[write+1] != nums[write]) ++write;
-        for (int i=write+1,start=write; i<n-1; ++i) {
+        ++write;
+        for (int i=write+1,start=write; i<n; ++i) {
             if (nums[i] != nums[start]) {
-                nums[write] = nums[i];
+                nums[write++] = nums[i];
                 start = i;
             }
         }
